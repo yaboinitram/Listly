@@ -1,0 +1,3 @@
+CREATE DATABASE IF NOT EXISTS listly_test;
+GRANT ALL PRIVILEGES ON listly_test.* TO 'listly_app'@'%';
+FLUSH PRIVILEGES;
