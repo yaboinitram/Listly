@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Listly",
+  "version": "0.1.0",
+  "description": "Save products from any site to shareable wishlists.",
+  "action": { "default_popup": "src/popup/index.html" },
+  "background": { "service_worker": "src/background.js", "type": "module" },
+  "content_scripts": [
+    { "matches": ["<all_urls>"], "js": ["src/content.js"] }
+  ],
+  "permissions": ["storage", "activeTab"],
+  "host_permissions": ["http://localhost:3000/*"]
+}
