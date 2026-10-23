@@ -6,7 +6,7 @@ const { randomUUID } = require('crypto');
 function createFakeUserRepository() {
   const users = new Map();
   return {
-    async createUser(email, passwordHash) {
+    async create(email, passwordHash) {
       if ([...users.values()].some((u) => u.email === email)) {
         const err = new Error('Duplicate entry');
         err.code = 'ER_DUP_ENTRY'; // same code MySQL throws
@@ -16,7 +16,7 @@ function createFakeUserRepository() {
       users.set(user.user_id, user);
       return { user_id: user.user_id, email };
     },
-    async findUserByEmail(email) {
+    async findByEmail(email) {
       return [...users.values()].find((u) => u.email === email) || null;
     },
   };
