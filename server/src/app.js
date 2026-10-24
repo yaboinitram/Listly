@@ -21,8 +21,11 @@ app.get('/health', async (req, res) => {
 
 app.use((err, req, res, next) => {
   const status = err.status || 500;
-  if (status === 500) console.error(err);
+  if (status === 500) {
+    // Log only the code and message. Printing the whole error can include err.sql,
+    // which holds the INSERT values (email and password hash).
+    console.error('Unhandled error:', err.code || 'NO_CODE', err.message);
+  }
   res.status(status).json({ error: status === 500 ? 'Internal server error.' : err.message });
 });
-
 module.exports = app;
