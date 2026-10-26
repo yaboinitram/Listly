@@ -19,6 +19,11 @@ app.get('/health', async (req, res) => {
   }
 });
 
+// T-32: every route below this line needs a valid token.
+// Add new owner-scoped routers below it so none of them can skip the check.
+app.use(authenticate);
+app.use('/wishlists', wishlistRoutes);
+
 app.use((err, req, res, next) => {
   const status = err.status || 500;
   if (status === 500) {
