@@ -1,0 +1,48 @@
+name: CI
+
+# T-28: run the test suite on every push, on every branch
+on:
+  push:
+
+jobs:
+  test:
+    name: API tests
+    runs-on: ubuntu-latest
+
+    # T-29: a fresh MySQL 8 database just for this run
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: rootpass
+          MYSQL_DATABASE: listly_test
+          MYSQL_USER: listly_app
+          MYSQL_PASSWORD: devpass
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -prootpass"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
+    env:
+      DB_HOST: 127.0.0.1
+      DB_USER: listly_app
+      DB_PASSWORD: devpass
+      DB_NAME: listly_test
+      JWT_SECRET: ci-only-secret-not-used-anywhere-else-123
+
+    defaults:
+      run:
+        working-directory: server
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+      - run: npm ci
+      - run: npm test
