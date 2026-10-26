@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "test": "jest --runInBand"
-  },
+    "test": "jest --runInBand",
+    "test:unit": "jest --selectProjects unit",
+    "test:integration": "jest --runInBand --selectProjects integration"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",

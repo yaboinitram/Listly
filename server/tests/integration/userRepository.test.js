@@ -1,5 +1,3 @@
-//This uses Austin's new method names, so it will fail on main until his branch merges.
-
 const pool = require('../../src/db');
 const userRepo = require('../../src/repositories/userRepository');
 

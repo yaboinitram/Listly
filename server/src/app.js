@@ -28,4 +28,5 @@ app.use((err, req, res, next) => {
   }
   res.status(status).json({ error: status === 500 ? 'Internal server error.' : err.message });
 });
+
 module.exports = app;
