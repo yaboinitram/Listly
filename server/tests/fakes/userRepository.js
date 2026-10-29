@@ -1,5 +1,3 @@
-//Like the repo test, this only works when Austin's new method names are merged.
-
 const { randomUUID } = require('crypto');
 
 // In-memory stand-in for userRepository, so service tests don't need MySQL.
