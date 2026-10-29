@@ -1,7 +1,7 @@
 const pool = require('../db');
 const { randomUUID } = require('crypto');
 
-async function findUserByEmail(email) {
+async function findByEmail(email) {
   const [rows] = await pool.query(
     'SELECT user_id, email, password_hash FROM users WHERE email = ?',
     [email]
@@ -18,4 +18,4 @@ async function createUser (email, passwordHash) {
   return { user_id: userId, email };
 }
 
-module.exports = { findUserByEmail, createUser };
+module.exports = { findByEmail, createUser };
