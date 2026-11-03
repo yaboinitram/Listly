@@ -9,7 +9,7 @@ async function findByEmail(email) {
   return rows[0] || null;
 }
 
-async function create(email, passwordHash) {
+async function createUser (email, passwordHash) {
   const userId = randomUUID();
   await pool.query(
     'INSERT INTO users (user_id, email, password_hash) VALUES (?, ?, ?)',
@@ -18,4 +18,4 @@ async function create(email, passwordHash) {
   return { user_id: userId, email };
 }
 
-module.exports = { findByEmail, create };
+module.exports = { findByEmail, createUser };

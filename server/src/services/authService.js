@@ -4,11 +4,25 @@ const userRepo = require('../repositories/userRepository');
 
 const BCRYPT_COST = 12;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MAX_EMAIL_LENGTH = 255; //user.email is varchar(255) in the database
+const MAX_PASSWORD_LENGTH = 8;
+const MAX_PASSWORD_BYTES  = 72; //bcrypt ignores everything after 72 bytes
+
+// Dummy hash to mitigate timing when user is not found
+const DUMMY_HASH = bcrypt.hashSync('not-a-real-password', BCRYPT_COST); 
 
 function httpError(status, message) {
   const err = new Error(message);
   err.status = status;
   return err;
+}
+
+function normalizeEmail(email) {
+  return typeof email === 'string' ? email.trim().toLowerCase() : '';
+}
+
+function passwordFitsBcypt(password) {
+  return typeof password === 'string' && Buffer.byteLength(password, 'utf8') <= MAX_PASSWORD_BYTES;
 }
 
 function issueToken(user) {
