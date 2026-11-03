@@ -1,0 +1,1 @@
+console.log('Listly content script loaded on:', document.title);
