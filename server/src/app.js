@@ -5,10 +5,14 @@ const pool = require('./db');
 const authRoutes = require('./routes/auth');
 
 const app = express();
+const authenticate = require('./middleware/authenticate');
+const wishlistRoutes = require('./routes/wishlists');
+
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use('/auth', authRoutes);
+app.use('/wishlists', authenticate, wishlistRoutes);//T-32: every owner-scope router goes behind authenticate
 
 app.get('/health', async (req, res) => {
   try {
