@@ -18,4 +18,4 @@ async function create(email, passwordHash) {
   return { user_id: userId, email };
 }
 
-module.exports = { findByEmail, createUser, create: createUser };
+module.exports = { findByEmail, create};
