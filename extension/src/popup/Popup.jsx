@@ -1,49 +1,51 @@
-/* global chrome */
 import { useEffect, useState } from 'react';
-import AuthForm from './AuthForm.jsx';
-import Wishlists from './Wishlists.jsx';
-import WishlistDetail from './WishlistDetail.jsx';
+import { onUnauthorized } from '../lib/api';
+import { clearSession, getSession, saveSession } from '../lib/storage';
+import AuthView from './views/AuthView';
+import HomeView from './views/HomeView';
+import WishlistView from './views/WishlistView';
 
 export default function Popup() {
-  const [user, setUser] = useState(undefined); // undefined = still checking storage
-  const [openList, setOpenList] = useState(null); // the wishlist being viewed, if any
+  const [session, setSession] = useState(undefined); // undefined = still loading from storage
+  const [route, setRoute] = useState({ name: 'home' });
 
-  // Check for a saved login each time the popup opens
   useEffect(() => {
-    chrome.storage.local.get('user').then((result) => setUser(result.user ?? null));
+    getSession().then(setSession);
+    onUnauthorized(() => {
+      setSession(null);
+      setRoute({ name: 'home' });
+    });
   }, []);
 
-  async function handleAuth(data) {
-    // data is { token, user } from the server
-    await chrome.storage.local.set({ token: data.token, user: data.user });
-    setUser(data.user);
+  async function handleSignedIn(newSession) {
+    await saveSession(newSession);
+    setSession(newSession);
+    setRoute({ name: 'home' });
   }
 
-  async function handleLogout() {
-    await chrome.storage.local.remove(['token', 'user']);
-    setUser(null);
-    setOpenList(null);
+  async function handleSignOut() {
+    await clearSession();
+    setSession(null);
   }
 
-  if (user === undefined) return null;
+  if (session === undefined) return <main className="shell" aria-busy="true" />;
+  if (!session) return <AuthView onSignedIn={handleSignedIn} />;
+
+  if (route.name === 'wishlist') {
+    return (
+      <WishlistView
+        key={route.wishlist.wishlist_id}
+        wishlist={route.wishlist}
+        onBack={() => setRoute({ name: 'home' })}
+      />
+    );
+  }
 
   return (
-    <div style={{ width: 320, padding: 16, fontFamily: 'sans-serif' }}>
-      {!user ? (
-        <AuthForm onAuth={handleAuth} />
-      ) : (
-        <>
-          <p>
-            Signed in as {user.email} <button onClick={handleLogout}>Sign out</button>
-          </p>
-          <hr />
-          {openList ? (
-            <WishlistDetail wishlist={openList} onBack={() => setOpenList(null)} />
-          ) : (
-            <Wishlists onOpen={setOpenList} />
-          )}
-        </>
-      )}
-    </div>
+    <HomeView
+      session={session}
+      onOpenList={(wishlist) => setRoute({ name: 'wishlist', wishlist })}
+      onSignOut={handleSignOut}
+    />
   );
 }
