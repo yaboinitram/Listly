@@ -8,8 +8,8 @@ export default [
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
+      ecmaVersion: 2022,
+      globals: { ...globals.browser, ...globals.webextensions },
       parserOptions: {
         ecmaVersion: 'latest',
         ecmaFeatures: { jsx: true },
