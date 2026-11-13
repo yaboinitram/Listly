@@ -53,4 +53,18 @@ async function listItems(ownerId, wishlistId) {
   return items;
 }
 
-module.exports = { addItem, listItems };
+// T-73: same checks as adding an item. PUT replaces the item, so a field left out is cleared.
+async function updateItem(ownerId, wishlistId, itemId, body) {
+  const item = validateItem(body);
+  const updated = await itemRepo.update(ownerId, wishlistId, itemId, item);
+  if (!updated) throw httpError(404, 'Item not found.');
+  return updated;
+}
+
+// T-74
+async function removeItem(ownerId, wishlistId, itemId) {
+  const removed = await itemRepo.remove(ownerId, wishlistId, itemId);
+  if (!removed) throw httpError(404, 'Item not found.');
+}
+
+module.exports = { addItem, listItems, updateItem, removeItem };
