@@ -32,4 +32,38 @@ async function listForOwnedWishlist(ownerId, wishlistId) {
   return rows;
 }
 
-module.exports = { insert, listForOwnedWishlist };
+// T-73: returns the updated item, or null if the item isn't in that wishlist or the user doesn't own it.
+async function update(ownerId, wishlistId, itemId, { title, price = null, imageUrl = null, sourceUrl }) {
+  const [result] = await pool.query(
+    `UPDATE items i
+     JOIN wishlists w ON w.wishlist_id = i.wishlist_id
+     SET i.title = ?, i.price = ?, i.image_url = ?, i.source_url = ?
+     WHERE i.item_id = ? AND i.wishlist_id = ? AND w.owning_user_id = ?`,
+    [title, price, imageUrl, sourceUrl, itemId, wishlistId, ownerId]
+  );
+  if (result.affectedRows === 0) return null;
+  return { item_id: itemId, wishlist_id: wishlistId, title, price, image_url: imageUrl, source_url: sourceUrl };
+}
+
+// T-74: returns true if the item was deleted, false if it isn't in that wishlist or the user doesn't own it.
+async function remove(ownerId, wishlistId, itemId) {
+  const [result] = await pool.query(
+    `DELETE i FROM items i
+     JOIN wishlists w ON w.wishlist_id = i.wishlist_id
+     WHERE i.item_id = ? AND i.wishlist_id = ? AND w.owning_user_id = ?`,
+    [itemId, wishlistId, ownerId]
+  );
+  return result.affectedRows > 0;
+}
+
+// T-85, T-90: items for the public share page. Display fields only, no IDs.
+async function listForShare(wishlistId) {
+  const [rows] = await pool.query(
+    `SELECT title, price, image_url, source_url
+     FROM items WHERE wishlist_id = ? ORDER BY date_added, item_id`,
+    [wishlistId]
+  );
+  return rows;
+}
+
+module.exports = { insert, listForOwnedWishlist, update, remove, listForShare };

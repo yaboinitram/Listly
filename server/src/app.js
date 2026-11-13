@@ -7,12 +7,14 @@ const authRoutes = require('./routes/auth');
 const app = express();
 const authenticate = require('./middleware/authenticate');
 const wishlistRoutes = require('./routes/wishlists');
+const shareRoutes = require('./routes/share');
 
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use('/auth', authRoutes);
 app.use('/wishlists', authenticate, wishlistRoutes);//T-32: every owner-scope router goes behind authenticate
+app.use('/share', shareRoutes); // T-85: public, no authenticate. The share ID is the permission.
 
 app.get('/health', async (req, res) => {
   try {
