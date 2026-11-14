@@ -40,6 +40,23 @@ async function register(email, password) {
   if (typeof password !== 'string' || password.length < 8) {
     throw httpError(400, 'Password must be at least 8 characters.');
   }
+  
+// T-136: the popup renames with PATCH /wishlists/:id (extension/src/lib/api.js).
+router.patch('/:wishlistId', async (req, res, next) => {
+  try {
+    const { name } = req.body ?? {};
+    res.json(await wishlistService.renameWishlist(req.user.user_id, req.params.wishlistId, name));
+  } catch (err) { next(err); }
+});
+
+// T-137
+router.delete('/:wishlistId', async (req, res, next) => {
+  try {
+    await wishlistService.deleteWishlist(req.user.user_id, req.params.wishlistId);
+    res.status(204).end();
+  } catch (err) { next(err); }
+});
+
   email = email.trim().toLowerCase();
 
   const hash = await bcrypt.hash(password, BCRYPT_COST);
@@ -59,7 +76,10 @@ async function login(email, password) {
     throw httpError(400, 'Email and password are required.');
   }
   const user = await userRepo.findByEmail(email.trim().toLowerCase());
-  const ok = user && (await bcrypt.compare(password, user.password_hash));
+    /* T-114, SEC-05: always run a bcrypt compare, against DUMMY_HASH when the email is unknown, 
+    so an unknown email takes as long as a wrong password and doesn't reveal which accounts exist.*/
+  const ok = (await bcrypt.compare(password, user ? user.password_hash : DUMMY_HASH)) && user;
+  
   if (!ok) throw httpError(401, 'Invalid email or password.');
 
   return { token: issueToken(user), user: { user_id: user.user_id, email: user.email } };

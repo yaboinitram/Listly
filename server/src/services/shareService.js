@@ -5,6 +5,10 @@ const { generateShareId } = require('../shareId');
 
 const MAX_ATTEMPTS = 5;
 
+/* T-102: share IDs are 32 letters and digits, and the share_id column holds at most 64.
+Anything else can't be a real link, so it gets 404 without a database query.*/
+const SHARE_ID_FORMAT = /^[A-Za-z0-9]{32,64}$/;
+
 /* T-80: owner only. Sharing a wishlist again returns the link it already has.
 `generate` is a parameter so a test can force a collision.*/
 async function createShareLink(ownerId, wishlistId, generate = generateShareId) {
@@ -35,6 +39,8 @@ async function getSharedWishlist(shareId) {
   const wishlist = await wishlistRepo.findByShareId(shareId);
   if (!wishlist) throw httpError(404, 'Wishlist not found.');
 
+  if (!SHARE_ID_FORMAT.test(shareId)) throw httpError(404, 'Wishlist not found.');
+  
   const items = await itemRepo.listForShare(wishlist.wishlist_id);
   return { name: wishlist.name, items };
 }
