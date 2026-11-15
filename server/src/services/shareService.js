@@ -36,11 +36,10 @@ async function createShareLink(ownerId, wishlistId, generate = generateShareId) 
 
 // T-85, T-90: public. Only the wishlist name and item display fields, never IDs or owner details.
 async function getSharedWishlist(shareId) {
+  if (!SHARE_ID_FORMAT.test(shareId)) throw httpError(404, 'Wishlist not found.');
   const wishlist = await wishlistRepo.findByShareId(shareId);
   if (!wishlist) throw httpError(404, 'Wishlist not found.');
 
-  if (!SHARE_ID_FORMAT.test(shareId)) throw httpError(404, 'Wishlist not found.');
-  
   const items = await itemRepo.listForShare(wishlist.wishlist_id);
   return { name: wishlist.name, items };
 }
