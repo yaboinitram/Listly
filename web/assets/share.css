@@ -2,18 +2,18 @@
    ruled lines, item names on the lines, prices in a column on the right. */
 
 :root {
-    --backdrop: #18191b;
-    --paper: #35373a;
-    --roll: #141414;
-    --roll-shade: #353333;
-    --ink: #e8eefc;
-    --ink-soft: #b5b9c2;
-    --rule: #f1f1f3;
-    --cobalt: #e9ebe9;
-    --green: #f4f7f6;
-    --thumb-bg: #0f0d0d;
-    --shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.6);
-  --shadow: 0 1px 0 rgba(15, 37, 87, 0.06), 0 12px 32px -12px rgba(15, 37, 87, 0.22);
+  /* Light mode: a light version of the dark theme below (neutral greys, charcoal accents) */
+  --backdrop: #eceef1;
+  --paper: #ffffff;
+  --roll: #d9dce1;
+  --roll-shade: #b4b9c1;
+  --ink: #1b1c1f;
+  --ink-soft: #5d6168;
+  --rule: #e4e6ea;
+  --cobalt: #1b1c1f;
+  --green: #1b1c1f;
+  --thumb-bg: #f3f4f6;
+  --shadow: 0 1px 0 rgba(20, 22, 26, 0.05), 0 12px 32px -12px rgba(20, 22, 26, 0.18);
 
   --font-display: 'Zilla Slab', 'Rockwell', 'Roboto Slab', Georgia, serif;
   --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
