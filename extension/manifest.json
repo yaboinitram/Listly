@@ -3,11 +3,40 @@
   "name": "Listly",
   "version": "0.1.0",
   "description": "Save products from any site to shareable wishlists.",
-  "action": { "default_popup": "src/popup/index.html" },
-  "background": { "service_worker": "src/background.js", "type": "module" },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "action": {
+    "default_popup": "src/popup/index.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png"
+    }
+  },
+  "background": {
+    "service_worker": "src/background.js",
+    "type": "module"
+  },
   "content_scripts": [
-    { "matches": ["<all_urls>"], "js": ["src/content.js"] }
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "src/content.js"
+      ]
+    }
   ],
-  "permissions": ["storage", "activeTab", "scripting"],
-  "host_permissions": ["http://localhost:3000/*"]
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "http://localhost:3000/*"
+  ]
 }

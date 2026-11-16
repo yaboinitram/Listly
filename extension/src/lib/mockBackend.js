@@ -66,14 +66,9 @@ export async function remove(id) {
   return null;
 }
 
-export async function share(id) {
-  await wait();
-  const { db, save } = await load();
-  const w = db.wishlists.find((x) => x.wishlist_id === id);
-  if (!w) throw notFound();
-  if (!w.share_id) w.share_id = crypto.randomUUID().replace(/-/g, '').slice(0, 16);
-  await save();
-  return { share_id: w.share_id };
+export async function share() {
+  // A share page reads the list from the server, so a list kept only in the extension can't be shared.
+  throw new Error('Sharing needs lists saved on the server. Remove VITE_LOCAL_WISHLISTS from extension/.env.');
 }
 
 export async function listItems(id) {

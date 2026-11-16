@@ -4,7 +4,7 @@ import { SHARE_BASE_URL } from '../../lib/config';
 import { formatPrice, hostnameOf, pluralize } from '../../lib/format';
 import Thumb from '../components/Thumb';
 import { useToast } from '../components/Toast';
-import { BackIcon, CloseIcon, LinkIcon } from '../components/Icons';
+import { BackIcon, CloseIcon, ExternalIcon, LinkIcon } from '../components/Icons';
 
 export default function WishlistView({ wishlist: initial, onBack }) {
   const [wishlist, setWishlist] = useState(initial);
@@ -109,10 +109,23 @@ export default function WishlistView({ wishlist: initial, onBack }) {
 
       <div className="list-actions">
         <span className="muted small">{items ? pluralize(count, 'item') : ' '}</span>
-        <button type="button" className="button button--ghost button--small" onClick={handleShare}>
-          <LinkIcon width={14} height={14} />
-          {wishlist.share_id ? 'Copy share link' : 'Share list'}
-        </button>
+        <span className="list-actions__buttons">
+          <button type="button" className="button button--ghost button--small" onClick={handleShare}>
+            <LinkIcon width={14} height={14} />
+            {wishlist.share_id ? 'Copy share link' : 'Share list'}
+          </button>
+          {wishlist.share_id && (
+            <a
+              className="button button--ghost button--small"
+              href={`${SHARE_BASE_URL}${wishlist.share_id}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <ExternalIcon width={14} height={14} />
+              Open
+            </a>
+          )}
+        </span>
       </div>
 
       {error && (

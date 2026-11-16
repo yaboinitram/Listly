@@ -36,6 +36,19 @@ export const ExternalIcon = (p) => (
     <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" />
   </svg>
 );
+// Default profile picture: a filled head-and-shoulders silhouette, clipped to a circle.
+export const UserIcon = (p) => (
+  <svg width={28} height={28} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...p}>
+    <clipPath id="user-icon-circle">
+      <circle cx="12" cy="12" r="12" />
+    </clipPath>
+    <g clipPath="url(#user-icon-circle)">
+      <circle cx="12" cy="9.5" r="4.2" />
+      <path d="M3 25c0-5.3 4-9.2 9-9.2s9 3.9 9 9.2z" />
+    </g>
+  </svg>
+);
+
 export const GiftIcon = (p) => (
   <svg {...base} {...p}>
     <rect x="3" y="8" width="18" height="4" rx="1" />

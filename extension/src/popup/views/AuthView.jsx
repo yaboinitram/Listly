@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { authApi } from '../../lib/api';
-import { GiftIcon } from '../components/Icons';
 
 export default function AuthView({ onSignedIn }) {
   const [mode, setMode] = useState('login'); // 'login' | 'register'
@@ -39,11 +38,11 @@ export default function AuthView({ onSignedIn }) {
   return (
     <main className="shell auth">
       <div className="auth__brand">
-        <span className="logo-mark"><GiftIcon width={20} height={20} /></span>
+        <img src="/icons/icon-128.png" alt="" width={40} height={40} style={{ display: 'block', flex: 'none' }} />
         <h1 className="wordmark">Listly</h1>
       </div>
       <p className="auth__intro">
-        Save things you want from any store, keep them in lists, and share a link when someone asks what to get you.
+        Save things you want from any store, keep them in a list, and share a link!
       </p>
 
       <div className="segmented" role="tablist" aria-label="Account">

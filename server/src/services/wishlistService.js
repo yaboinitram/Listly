@@ -3,8 +3,8 @@ const httpError = require('../httpError');
 
 const MAX_NAME_LENGTH = 100; // wishlists.name is VARCHAR(100) in the database
 
-// T-36: name is required and at most 100 characters.
-async function createWishlist(ownerId, name) {
+// T-36: name is required and at most 100 characters. Returns the trimmed name.
+function validateName(name) {
   if (typeof name !== 'string' || name.trim() === '') {
     throw httpError(400, 'Wishlist name is required.');
   }
@@ -12,7 +12,11 @@ async function createWishlist(ownerId, name) {
   if (trimmed.length > MAX_NAME_LENGTH) {
     throw httpError(400, `Wishlist name must be ${MAX_NAME_LENGTH} characters or fewer.`);
   }
-  return wishlistRepo.create(ownerId, trimmed);
+  return trimmed;
+}
+
+async function createWishlist(ownerId, name) {
+  return wishlistRepo.create(ownerId, validateName(name));
 }
 
 // T-37: only the signed-in user's wishlists (the repository scopes by owner).
