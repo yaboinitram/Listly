@@ -53,7 +53,7 @@ describe('PATCH /wishlists/:wishlistId renames', () => {
     const res = await api.patch(`/wishlists/${list.wishlist_id}`, { name: '  Holidays  ' });
 
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({ wishlist_id: list.wishlist_id, name: 'Holidays', share_id: null });
+    expect(res.body).toEqual({ wishlist_id: list.wishlist_id, name: 'Holidays' });
     expect((await api.get('/wishlists')).body[0].name).toBe('Holidays');
   });
 
