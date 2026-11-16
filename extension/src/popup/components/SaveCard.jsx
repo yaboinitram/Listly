@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Thumb from './Thumb';
 import { CheckIcon } from './Icons';
 import { hostnameOf } from '../../lib/format';
+import { validateItemForm } from '../../lib/validateItem';
 import { getLastWishlistId, setLastWishlistId } from '../../lib/storage';
 
 const NEW_LIST = '__new__';
@@ -119,21 +120,16 @@ export default function SaveCard({ page, wishlists: maybeWishlists, onSave, onOp
     e.preventDefault();
     setError(null);
 
-    const cleanTitle = title.trim();
-    if (!cleanTitle) return setError('Give this item a name.');
-    let parsedPrice = null;
-    if (price.trim()) {
-      parsedPrice = Number(price.replace(/[^\d.]/g, ''));
-      if (!Number.isFinite(parsedPrice) || parsedPrice < 0) return setError('Price should be a number, like 24.99.');
-    }
+    const checked = validateItemForm({ title, price });
+    if (!checked.ok) return setError(checked.error);
     if (creatingList && !newListName.trim()) return setError('Name your new list.');
 
     setSaving(true);
     try {
       const list = await onSave({
         item: {
-          title: cleanTitle,
-          price: parsedPrice,
+          title: checked.item.title,
+          price: checked.item.price,
           image_url: page.image_url,
           source_url: page.source_url,
         },
