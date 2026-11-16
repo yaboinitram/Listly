@@ -13,7 +13,7 @@ router.post('/', async (req, res, next) => {
 
 router.get('/', async (req, res, next) => {
   try {
-    res.json(await wishlistService.listWishlists(req.user.user_id));
+    res.json(await wishlistService.listWishlistSummaries(req.user.user_id)); // T-114
   } catch (err) { next(err); }
 });
 
@@ -66,6 +66,22 @@ router.post('/:wishlistId/share', async (req, res, next) => {
   try {
     const { share_id, created } = await shareService.createShareLink(req.user.user_id, req.params.wishlistId);
     res.status(created ? 201 : 200).json({ share_id });
+  } catch (err) { next(err); }
+});
+
+// T-136: the popup renames with PATCH /wishlists/:id (extension/src/lib/api.js).
+router.patch('/:wishlistId', async (req, res, next) => {
+  try {
+    const { name } = req.body ?? {};
+    res.json(await wishlistService.renameWishlist(req.user.user_id, req.params.wishlistId, name));
+  } catch (err) { next(err); }
+});
+
+// T-137
+router.delete('/:wishlistId', async (req, res, next) => {
+  try {
+    await wishlistService.deleteWishlist(req.user.user_id, req.params.wishlistId);
+    res.status(204).end();
   } catch (err) { next(err); }
 });
 
