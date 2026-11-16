@@ -37,6 +37,7 @@
     "scripting"
   ],
   "host_permissions": [
-    "http://localhost:3000/*"
+    "http://localhost:3000/*",
+    "https://listly-production-3c6ee47b.up.railway.app/*"
   ]
 }
