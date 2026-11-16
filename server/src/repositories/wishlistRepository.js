@@ -48,4 +48,49 @@ async function findByShareId(shareId) {
   return rows[0] || null;
 }
 
-module.exports = { create, listByOwner, findOwned, setShareId, findByShareId };
+// What the popup's list screen shows: each of the owner's wishlists with its share ID
+// (null until shared) and how many items it holds. Same owner scoping as listByOwner.
+async function listSummariesByOwner(ownerId) {
+  const [rows] = await pool.query(
+    `SELECT w.wishlist_id, w.name, w.share_id, COUNT(i.item_id) AS item_count
+     FROM wishlists w
+     LEFT JOIN items i ON i.wishlist_id = w.wishlist_id
+     WHERE w.owning_user_id = ?
+     GROUP BY w.wishlist_id, w.name, w.share_id
+     ORDER BY w.name`,
+    [ownerId]
+  );
+  // COUNT comes back as a BIGINT; make it a plain number for JSON.
+  return rows.map((row) => ({ ...row, item_count: Number(row.item_count) }));
+}
+
+// Returns the renamed wishlist, or null if ownerId doesn't own it.
+async function rename(ownerId, wishlistId, name) {
+  const [result] = await pool.query(
+    'UPDATE wishlists SET name = ? WHERE wishlist_id = ? AND owning_user_id = ?',
+    [name, wishlistId, ownerId]
+  );
+  if (result.affectedRows === 0) return null;
+  return findOwned(ownerId, wishlistId);
+}
+
+// Returns true if the wishlist was deleted. Its items go with it (ON DELETE CASCADE),
+// and its share link stops working.
+async function remove(ownerId, wishlistId) {
+  const [result] = await pool.query(
+    'DELETE FROM wishlists WHERE wishlist_id = ? AND owning_user_id = ?',
+    [wishlistId, ownerId]
+  );
+  return result.affectedRows > 0;
+}
+
+module.exports = {
+  create,
+  listByOwner,
+  listSummariesByOwner,
+  findOwned,
+  setShareId,
+  findByShareId,
+  rename,
+  remove,
+};

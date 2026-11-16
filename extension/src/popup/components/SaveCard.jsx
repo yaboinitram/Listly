@@ -91,7 +91,6 @@ export default function SaveCard({ page, wishlists: maybeWishlists, onSave, onOp
       <section className="tag tag--idle">
         <div className="tag__hole" />
         <p className="tag__headline">Open a product page to save it</p>
-        <p className="muted small">Listly can't read browser pages like new tabs or settings.</p>
       </section>
     );
   }

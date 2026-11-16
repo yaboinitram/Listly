@@ -3,7 +3,7 @@ import { wishlistApi } from '../../lib/api';
 import { readCurrentPage } from '../../lib/currentPage';
 import { pluralize } from '../../lib/format';
 import SaveCard from '../components/SaveCard';
-import { ChevronIcon, GiftIcon, PlusIcon } from '../components/Icons';
+import { ChevronIcon, PlusIcon, UserIcon } from '../components/Icons';
 
 export default function HomeView({ session, onOpenList, onSignOut }) {
   const [page, setPage] = useState(undefined); // undefined = loading; then a readCurrentPage() result
@@ -62,11 +62,11 @@ export default function HomeView({ session, onOpenList, onSignOut }) {
     <main className="shell">
       <header className="topbar">
         <div className="topbar__brand">
-          <span className="logo-mark logo-mark--small"><GiftIcon width={14} height={14} /></span>
+          <img src="/icons/icon-128.png" alt="" width={26} height={26} style={{ display: 'block', flex: 'none' }} />
           <span className="wordmark wordmark--small">Listly</span>
         </div>
         <details className="account">
-          <summary aria-label={`Account: ${email}`}>{email.charAt(0).toUpperCase() || '?'}</summary>
+          <summary aria-label={`Account: ${email}`} title={email}><UserIcon /></summary>
           <div className="account__menu">
             <p className="small muted truncate">{email}</p>
             <button type="button" className="link-button" onClick={onSignOut}>Sign out</button>
@@ -122,7 +122,7 @@ export default function HomeView({ session, onOpenList, onSignOut }) {
             {[0, 1].map((i) => <li key={i} className="row row--skeleton" />)}
           </ul>
         ) : wishlists.length === 0 && !loadError ? (
-          <p className="empty">No lists yet. Save something above and Listly will start one for you.</p>
+          <p className="empty">No lists yet. Saved Lists will appear here!</p>
         ) : (
           <ul className="rows">
             {wishlists.map((w) => (

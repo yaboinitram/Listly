@@ -17,6 +17,20 @@ router.get('/', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
+router.patch('/:wishlistId', async (req, res, next) => {
+  try {
+    const { name } = req.body ?? {};
+    res.json(await wishlistService.renameWishlist(req.user.user_id, req.params.wishlistId, name));
+  } catch (err) { next(err); }
+});
+
+router.delete('/:wishlistId', async (req, res, next) => {
+  try {
+    await wishlistService.deleteWishlist(req.user.user_id, req.params.wishlistId);
+    res.status(204).end();
+  } catch (err) { next(err); }
+});
+
 router.post('/:wishlistId/items', async (req, res, next) => {
   try {
     const item = await itemService.addItem(req.user.user_id, req.params.wishlistId, req.body);

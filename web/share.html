@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Share links are private: keep them out of search engines -->
+    <meta name="robots" content="noindex" />
+    <title>Wishlist</title>
+    <link rel="icon" href="/s/assets/logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/s/assets/share.css" />
+    <script src="/s/assets/share.js" defer></script>
+  </head>
+  <body>
+    <header class="masthead">
+      <img class="masthead__logo" src="/s/assets/logo.png" alt="Listly" width="64" height="64" />
+    </header>
+
+    <main class="scroll" aria-live="polite">
+      <div class="scroll__roll" aria-hidden="true"></div>
+
+      <section class="sheet" id="sheet" aria-busy="true">
+        <h1 class="sheet__title" id="title">Loading wishlist…</h1>
+        <p class="sheet__meta" id="meta"></p>
+        <hr class="sheet__rule" />
+        <ol class="items" id="items"></ol>
+        <p class="sheet__empty" id="empty" hidden>Nothing on this list yet. Check back later.</p>
+      </section>
+
+      <div class="scroll__roll scroll__roll--bottom" aria-hidden="true"></div>
+    </main>
+
+
+    <!-- Each item is copied from this template. Text is filled in with textContent, never as HTML. -->
+    <template id="item-template">
+      <li class="item">
+        <a class="item__link" target="_blank" rel="noopener noreferrer">
+          <span class="item__thumb"></span>
+          <span class="item__body">
+            <span class="item__title"></span>
+            <span class="item__store"></span>
+          </span>
+          <span class="item__price"></span>
+        </a>
+      </li>
+    </template>
+  </body>
+</html>
