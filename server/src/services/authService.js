@@ -40,6 +40,18 @@ async function register(email, password) {
   if (typeof password !== 'string' || password.length < 8) {
     throw httpError(400, 'Password must be at least 8 characters.');
   }
+    if (typeof password !== 'string' || password.length < 8) {
+    throw httpError(400, 'Password must be at least 8 characters.');
+  }
+  // T-114: longer than the users.email column would crash the INSERT with a 500.
+  if (email.length > MAX_EMAIL_LENGTH) {
+    throw httpError(400, `Email must be ${MAX_EMAIL_LENGTH} characters or fewer.`);
+  }
+  // T-114: bcrypt silently ignores everything past 72 bytes, so refuse longer passwords.
+  if (!passwordFitsBcypt(password)) {
+    throw httpError(400, `Password must be ${MAX_PASSWORD_BYTES} characters or fewer.`);
+  }
+
   email = email.trim().toLowerCase();
 
   const hash = await bcrypt.hash(password, BCRYPT_COST);
@@ -59,7 +71,10 @@ async function login(email, password) {
     throw httpError(400, 'Email and password are required.');
   }
   const user = await userRepo.findByEmail(email.trim().toLowerCase());
-  const ok = user && (await bcrypt.compare(password, user.password_hash));
+    /* T-114, SEC-05: always run a bcrypt compare, against DUMMY_HASH when the email is unknown, 
+    so an unknown email takes as long as a wrong password and doesn't reveal which accounts exist.*/
+  const ok = (await bcrypt.compare(password, user ? user.password_hash : DUMMY_HASH)) && user;
+
   if (!ok) throw httpError(401, 'Invalid email or password.');
 
   return { token: issueToken(user), user: { user_id: user.user_id, email: user.email } };
